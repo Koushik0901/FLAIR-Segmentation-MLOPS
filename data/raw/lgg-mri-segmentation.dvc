@@ -1,0 +1,5 @@
+outs:
+- md5: 1126d2845e5c6100a08e0aa41ee113eb.dir
+  size: 1056310504
+  nfiles: 7860
+  path: lgg-mri-segmentation
