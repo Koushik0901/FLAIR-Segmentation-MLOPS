@@ -32,9 +32,8 @@ imgs = sorted(normal_images["path"].values, key=lambda x : int(x[common_file_len
 masks = sorted(mask_images["path"].values, key=lambda x :  int(x[common_file_length:-mask_img_file_length]))
 
 # x[common_file_length:-normal_img_file_length] is picking up the number stored after "TCGA_DU_7010_19860307_" and before ".tif" from a given Image x
-# Same is happening w.r.t Mask Image
 
-# Sorting check
+# sanity check
 idx = random.randint(0, len(imgs)-1)
 print("Path to the Image:", imgs[idx])
 print("\nPath to the Mask:", masks[idx])
@@ -45,4 +44,8 @@ final_df = pd.DataFrame({"patient_id": normal_images.patient_id.values,
                          "mask_path": masks
                         })
 
-final_df.to_csv('/home/koushik/workspace/Projects/MLOPS/data/preprocessed/preprocessed.csv', index=False)
+train_df = final_df.iloc[:3000, :]
+val_df = final_df.iloc[3000:, :]
+
+train_df.to_csv('/home/koushik/workspace/Projects/MLOPS/data/preprocessed/train.csv', index=False)
+val_df.to_csv('/home/koushik/workspace/Projects/MLOPS/data/preprocessed/eval.csv', index=False)

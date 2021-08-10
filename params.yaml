@@ -2,9 +2,23 @@ base:
   project: Brain MRI segmentation
   random_state: 42
 
-load_data:
+dataset:
   raw_dataset: data/raw/lgg-mri-segmentation
-  preprocessed_csv: data/preprocessed/preprocessed.csv
+  train_csv: data/preprocessed/train.csv
+  eval_csv: data/preprocessed/eval.csv
+  mean: [45.5518, 43.5053, 44.7744]
+  std: [50.4559, 49.2544, 49.8701]
+  image_height: 160
+  image_width: 240
+  batch_size: 16
+  num_workers: 2
 
-split_data:
-  test_size: 0.2
+model:
+  in_channels: 3
+  out_channels: 1
+
+train:
+  lr: 3e-4
+  num_epochs: 10
+  checkpoint_path: './saved_models/unet.pth.tar'
+  load_checkpoint: False
