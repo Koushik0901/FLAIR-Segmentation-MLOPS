@@ -7,7 +7,13 @@ stages:
       md5: 1126d2845e5c6100a08e0aa41ee113eb.dir
       size: 1056310504
       nfiles: 7860
+    - path: src/preprocess_data.py
+      md5: 67d0f1646aa5c1ebb9a3710656b12f8d
+      size: 2135
     outs:
-    - path: data/preprocessed/preprocessed.csv
-      md5: 49ebaeb2a4c1aec48378f18394e39db8
-      size: 1125675
+    - path: data/preprocessed/eval.csv
+      md5: 7abae07138b0f8d84189063cd8b29286
+      size: 266655
+    - path: data/preprocessed/train.csv
+      md5: 87157aee105a2de70e30b77d25992cbd
+      size: 859052
