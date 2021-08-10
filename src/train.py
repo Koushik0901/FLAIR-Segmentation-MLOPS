@@ -12,7 +12,7 @@ DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 def train_loop(model, loader, optimizer, loss_fn, writer, step, scaler):
     loop = tqdm(loader)
-    for images, mask in loop:
+    for images, masks in loop:
         images = images.to(DEVICE)
         masks = masks.float().unsqueeze(1).to(DEVICE)
     
@@ -30,13 +30,14 @@ def train_loop(model, loader, optimizer, loss_fn, writer, step, scaler):
     return step
 
 def main(config):
-
+    train_loader, val_loader = get_loader(config)
     model = UNET(config['model']['in_channels'], config['model']['out_channels'])
     model = model.to(DEVICE)
     if config['train']['load_checkpoint']:
         load_checkpoint(config['train']['checkpoint_path'], model)
 
-    optimizer = torch.optim.AdamW(model.parameters(), lr=config['train']['lr'])
+    optimizer = torch.optim.AdamW(model.parameters(), lr=float(config['train']['lr']))
+    loss_fn = torch.nn.BCEWithLogitsLoss()
     scaler = torch.cuda.amp.GradScaler()
     writer = SummaryWriter()
     step=0
@@ -56,3 +57,17 @@ def main(config):
             "notes": f"epoch: {epoch}, accuracy: {accuracy}, dice_score: {dice_score}"
         }
         save_checkpoint(checkpoint, config['train']['checkpoint_path'])
+
+        table = [
+            ['epoch', epoch]
+            ["accuracy", accuracy],
+            ["dice score", dice_score]
+        ]
+        print(tabulate(table))
+
+    print("Done Training!")
+
+if __name__ == "__main__":
+    with open('params.yaml', 'r') as f:
+        config = yaml.safe_load(f)
+    main(config)
