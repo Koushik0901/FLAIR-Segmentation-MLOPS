@@ -1,13 +1,16 @@
 import torch
+import torchvision
+
 
 def save_checkpoint(state, filename=None):
-    print('--> Saving checkpoint...')
+    print("--> Saving checkpoint...")
     torch.save(state, filename)
 
+
 def load_checkpoint(filename, model):
-    print('--> Loading checkpoint...')
+    print("--> Loading checkpoint...")
     checkpoint = torch.load(filename)
-    model.load_state_dict(checkpoint['model_state_dict'])
+    model.load_state_dict(checkpoint["model_state_dict"])
 
 
 def accuracy_and_dice_score(model, loader, device="cuda"):
@@ -19,13 +22,26 @@ def accuracy_and_dice_score(model, loader, device="cuda"):
     with torch.no_grad():
         for x, y in loader:
             x = x.to(device)
-            y = y.unsqueeze(1).to(device)
-            preds = torch.round(torch.sigmoid(model(x)))
+            y = y.to(device).unsqueeze(1)
+            preds = torch.sigmoid(model(x))
+            preds = (preds > 0.5).float()
             num_correct += (preds == y).sum()
             num_pixels += torch.numel(preds)
-            dice_score += (2 * (preds * y).sum()) / ((preds+ y).sum() + 1e-8)
-    
-    accuracy = num_correct/num_pixels*100:.2f
+            dice_score += (2 * (preds * y).sum()) / ((preds + y).sum() + 1e-8)
+
+    print(f"Got {num_correct}/{num_pixels} with acc {num_correct/num_pixels*100:.2f}")
+    print(f"Dice score: {dice_score/len(loader)}")
     model.train()
-    return accuracy, dice_score/len(loader)
-    
+
+
+def save_predictions(loader, model, folder="saved_images/", device="cuda"):
+    model.eval()
+    for idx, (x, y) in enumerate(loader):
+        x = x.to(device=device)
+        with torch.no_grad():
+            preds = torch.sigmoid(model(x))
+            preds = (preds > 0.5).float()
+        torchvision.utils.save_image(preds, f"{folder}/pred_{idx}.png")
+        torchvision.utils.save_image(y.unsqueeze(1), f"{folder}{idx}.png")
+
+    model.train()

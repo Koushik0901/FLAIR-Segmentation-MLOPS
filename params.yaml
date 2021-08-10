@@ -6,11 +6,11 @@ dataset:
   raw_dataset: data/raw/lgg-mri-segmentation
   train_csv: data/preprocessed/train.csv
   eval_csv: data/preprocessed/eval.csv
-  mean: [45.5518, 43.5053, 44.7744]
-  std: [50.4559, 49.2544, 49.8701]
-  image_height: 160
-  image_width: 240
-  batch_size: 16
+  mean: [-0.8993, -0.8798, -0.8943]
+  std: [0.0039, 0.0039, 0.0040]
+  image_height: 256
+  image_width: 256
+  batch_size: 32
   num_workers: 2
 
 model:
