@@ -1,0 +1,10 @@
+base:
+  project: Brain MRI segmentation
+  random_state: 42
+
+load_data:
+  raw_dataset: data/raw/lgg-mri-segmentation
+  preprocessed_csv: data/preprocessed/preprocessed.csv
+
+split_data:
+  test_size: 0.2

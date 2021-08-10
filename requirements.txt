@@ -5,3 +5,4 @@ dvc
 dvc[gdrive]
 albumentations
 streamlit
+seaborn

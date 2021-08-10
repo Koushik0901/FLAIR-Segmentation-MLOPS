@@ -1,0 +1,13 @@
+schema: '2.0'
+stages:
+  preprocess_data:
+    cmd: python src/preprocess_data.py --config=params.yaml
+    deps:
+    - path: data/raw/lgg-mri-segmentation
+      md5: 1126d2845e5c6100a08e0aa41ee113eb.dir
+      size: 1056310504
+      nfiles: 7860
+    outs:
+    - path: data/preprocessed/preprocessed.csv
+      md5: 49ebaeb2a4c1aec48378f18394e39db8
+      size: 1125675
