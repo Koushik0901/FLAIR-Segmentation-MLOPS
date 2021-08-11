@@ -67,5 +67,5 @@ pip install -r requirements.txt
 ## **Steps to train your own model**
  ### *Scripts*
  `src/train.py` - is used to train the model \
- `inference/engine.py` - is used to perform inference
+ `inference/engine.py` - is used to perform inference \
  `inference/ui.py` - is used to build the streamlit web application
