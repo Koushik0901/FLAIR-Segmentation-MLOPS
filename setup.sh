@@ -9,3 +9,5 @@ headless = truen
 enableCORS=falsen
 port = $PORTn
 " > ~/.streamlit/config.toml
+pip install torch==1.8.1+cpu -f https://download.pytorch.org/whl/torch_stable.html
+pip install torchvision==0.9.1+cpu -f https://download.pytorch.org/whl/torch_stable.html
