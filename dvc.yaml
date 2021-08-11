@@ -1,9 +1,10 @@
 stages:
   preprocess_data:
-    cmd: python src/preprocess_data.py --config=params.yaml
+    cmd: python src/preprocess_data.py
     deps:
     - src/preprocess_data.py 
     - data/raw/lgg-mri-segmentation
     outs:
     - data/preprocessed/train.csv
-    - data/preprocessed/eval.csv
+    - data/preprocessed/valid.csv
+    - data/preprocessed/test.csv

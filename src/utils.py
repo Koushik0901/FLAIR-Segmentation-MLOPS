@@ -13,26 +13,23 @@ def load_checkpoint(filename, model):
     model.load_state_dict(checkpoint["model_state_dict"])
 
 
-def accuracy_and_dice_score(model, loader, device="cuda"):
-    num_correct = 0
-    num_pixels = 0
-    dice_score = 0
-    model.eval()
+def dice_coeff(preds, labels, e=1e-7):
+    preds = torch.where(preds > 0.5, 1, 0)
+    labels = labels.byte()
+    intersection = (preds & labels).float().sum((1, 2))
+    return ((2 * intersection) + e) / (
+        predictions.float().sum((1, 2)) + labels.float().sum((1, 2)) + e
+    )
 
-    with torch.no_grad():
-        for x, y in loader:
-            x = x.to(device)
-            y = y.to(device)
-            preds = torch.sigmoid(model(x))
-            preds = (preds > 0.5).float()
-            num_correct += (preds == y).sum()
-            num_pixels += torch.numel(preds)
-            dice_score += (2 * (preds * y).sum()) / ((preds + y).sum() + 1e-8)
 
-    print(f"Got {num_correct}/{num_pixels} with acc {num_correct/num_pixels*100:.2f}")
-    print(f"Dice score: {dice_score/len(loader)}")
-    model.train()
-    return num_correct / num_pixels * 100, dice_score / len(loader)
+def iou(preds, labels, e=1e-7):
+    preds = torch.where(preds > 0.5, 1, 0)
+    labels = labels.byte()
+    intersection = (predictions & labels).float().sum((1, 2))
+    union = (predictions | labels).float().sum((1, 2))
+
+    iou = (intersection + e) / (union + e)
+    return iou
 
 
 def save_predictions(loader, model, folder="saved_images", device="cuda"):

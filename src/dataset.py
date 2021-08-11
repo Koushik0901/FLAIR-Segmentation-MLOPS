@@ -2,10 +2,11 @@ import os
 import numpy as np
 import pandas as pd
 import yaml
-from PIL import Image
+import cv2
+import torch
 from torch.utils.data import DataLoader, Dataset
+import torchvision.transforms as transforms
 import albumentations as A
-from albumentations.pytorch import ToTensorV2
 
 
 with open("config.yaml", "r") as f:
@@ -18,16 +19,14 @@ train_transform = A.Compose(
             height=config["dataset"]["image_height"],
             width=config["dataset"]["image_width"],
         ),
-        A.CLAHE(clip_limit=4.0, tile_grid_size=(4, 4), p=1.0),
-        A.Rotate(limit=35, p=0.5),
-        A.HorizontalFlip(p=0.5),
-        A.VerticalFlip(p=0.3),
+        A.ChannelDropout(p=0.3),
+        A.RandomBrightnessContrast(p=0.3),
+        A.ColorJitter(p=0.3),
         A.Normalize(
             mean=config["dataset"]["mean"],
             std=config["dataset"]["std"],
             max_pixel_value=255.0,
         ),
-        ToTensorV2(),
     ]
 )
 
@@ -42,38 +41,46 @@ val_transforms = A.Compose(
             std=config["dataset"]["std"],
             max_pixel_value=255.0,
         ),
-        ToTensorV2(),
     ],
 )
 
 
 class BrainMRIDataset(Dataset):
-    def __init__(self, csv_file: str, transform=None) -> None:
-        self.df = pd.read_csv(csv_file)
+    def __init__(self, df, transform=None, mean=0.5, std=0.25):
+        super(BrainMRIDataset, self).__init__()
+        self.df = df
         self.transform = transform
+        self.mean = mean
+        self.std = std
 
     def __len__(self):
         return len(self.df)
 
-    def __getitem__(self, idx):
-        img_path = self.df.iloc[idx]["image_path"]
-        mask_path = self.df.iloc[idx]["mask_path"]
+    def __getitem__(self, idx, raw=False):
+        row = self.df.iloc[idx]
+        img = cv2.imread(row["image_filename"], cv2.IMREAD_UNCHANGED)
+        mask = cv2.imread(row["mask_filename"], cv2.IMREAD_GRAYSCALE)
+        if raw:
+            return img, mask
 
-        image = np.array(Image.open(img_path).convert("RGB"))
-        mask = np.array(Image.open(mask_path).convert("L"), dtype=np.float32)
-        mask[mask == 255.0] = 1.0
+        if self.transform:
+            augmented = self.transform(image=img, mask=mask)
+            image, mask = augmented["image"], augmented["mask"]
 
-        if self.transform is not None:
-            augmentations = self.transform(image=image, mask=mask)
-            image = augmentations["image"]
-            mask = augmentations["mask"]
-
-        return image, mask.unsqueeze(0)
+        img = transforms.functional.to_tensor(img)
+        mask = mask // 255
+        mask = torch.Tensor(mask)
+        return img, mask
 
 
 def get_loader(config):
-    train_dataset = BrainMRIDataset(config["dataset"]["train_csv"], train_transform)
-    val_dataset = BrainMRIDataset(config["dataset"]["eval_csv"], val_transforms)
+    train_df = pd.read_csv(config["dataset"]["train_csv"])
+    val_df = pd.read_csv(config["dataset"]["valid_csv"])
+    test_df = pd.read_csv(config["dataset"]["test_csv"])
+
+    train_dataset = BrainMRIDataset(train_df, train_transform)
+    val_dataset = BrainMRIDataset(val_df, val_transforms)
+    test_dataset = BrainMRIDataset(test_df, val_transforms)
 
     train_loader = DataLoader(
         train_dataset,
@@ -87,12 +94,18 @@ def get_loader(config):
         shuffle=False,
         num_workers=config["dataset"]["num_workers"],
     )
+    test_loader = DataLoader(
+        test_dataset,
+        batch_size=config["dataset"]["batch_size"],
+        shuffle=False,
+        num_workers=config["dataset"]["num_workers"],
+    )
 
-    return train_loader, val_loader
+    return train_loader, val_loader, test_loader
 
 
 if __name__ == "__main__":
-    train_loader, val_loader = get_loader(config)
+    train_loader, val_loader, test_loader = get_loader(config)
     for x, y in train_loader:
         print(x.shape)
         print(y.shape)

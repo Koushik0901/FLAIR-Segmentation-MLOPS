@@ -5,7 +5,8 @@ base:
 dataset:
   raw_dataset: data/raw/lgg-mri-segmentation
   train_csv: data/preprocessed/train.csv
-  eval_csv: data/preprocessed/eval.csv
+  valid_csv: data/preprocessed/valid.csv
+  test_csv: data/preprocessed/test.csv
   mean: [-0.8993, -0.8798, -0.8943]
   std: [0.0039, 0.0039, 0.0040]
   image_height: 224
@@ -16,9 +17,11 @@ dataset:
 model:
   in_channels: 3
   out_channels: 1
+  encoder_name: efficientnet-b7
+  encoder_weights: imagenet
 
 train:
-  lr: 3e-4
+  lr: 0.001
   num_epochs: 10
   checkpoint_path: './saved_models/unet.pth.tar'
   load_checkpoint: False
