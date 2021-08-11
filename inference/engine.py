@@ -5,7 +5,7 @@ from PIL import Image
 
 def inference(
     img_path,
-    model_path="/home/koushik/workspace/Projects/MLOPS/saved_models/flair-segmentation.pt",
+    model_path="./saved_models/flair-segmentation.pt",
     save_path="./inference/result.png",
 ) -> None:
 
