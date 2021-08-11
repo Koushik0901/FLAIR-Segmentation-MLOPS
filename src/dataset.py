@@ -15,34 +15,12 @@ with open("config.yaml", "r") as f:
 
 train_transform = A.Compose(
     [
-        A.Resize(
-            height=config["dataset"]["image_height"],
-            width=config["dataset"]["image_width"],
-        ),
         A.ChannelDropout(p=0.3),
         A.RandomBrightnessContrast(p=0.3),
         A.ColorJitter(p=0.3),
-        A.Normalize(
-            mean=config["dataset"]["mean"],
-            std=config["dataset"]["std"],
-            max_pixel_value=255.0,
-        ),
     ]
 )
 
-val_transforms = A.Compose(
-    [
-        A.Resize(
-            height=config["dataset"]["image_height"],
-            width=config["dataset"]["image_width"],
-        ),
-        A.Normalize(
-            mean=config["dataset"]["mean"],
-            std=config["dataset"]["std"],
-            max_pixel_value=255.0,
-        ),
-    ],
-)
 
 
 class BrainMRIDataset(Dataset):
@@ -79,8 +57,8 @@ def get_loader(config):
     test_df = pd.read_csv(config["dataset"]["test_csv"])
 
     train_dataset = BrainMRIDataset(train_df, train_transform)
-    val_dataset = BrainMRIDataset(val_df, val_transforms)
-    test_dataset = BrainMRIDataset(test_df, val_transforms)
+    val_dataset = BrainMRIDataset(val_df)
+    test_dataset = BrainMRIDataset(test_df)
 
     train_loader = DataLoader(
         train_dataset,

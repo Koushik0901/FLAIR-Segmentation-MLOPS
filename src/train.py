@@ -28,7 +28,7 @@ def train_loop(model, loader, optimizer, loss_fn, writer, step, scaler):
     for images, masks in tqdm(loader):
         images = images.to(DEVICE)
         masks = masks.float().to(DEVICE)
-        # forward prop\
+        # forward prop
         with torch.cuda.amp.autocast():
             preds = model(images).squeeze(1)
             loss = loss_fn(preds, masks)
@@ -45,7 +45,7 @@ def train_loop(model, loader, optimizer, loss_fn, writer, step, scaler):
     return train_loss, step
 
 
-def valid_loop(model, loader, optimizer, loss_fn, writer, step, scaler):
+def valid_loop(model, loader, loss_fn, writer, step):
     losses = []
     running_dice = 0
     running_iou = 0
@@ -72,7 +72,7 @@ def valid_loop(model, loader, optimizer, loss_fn, writer, step, scaler):
 
 def main(config):
     train_loader, valid_loader, test_loader = get_loader(config)
-    
+
     model = smp.FPN(
         encoder_name=config["model"]["encoder_name"],
         encoder_weights=config["model"]["encoder_weights"],
@@ -94,13 +94,13 @@ def main(config):
     writer = SummaryWriter()
     step = 0
 
-    best_val_loss = 100
+    best_dice = 0.00
     for epoch in range(config["train"]["num_epochs"]):
         train_loss, step = train_loop(
             model, train_loader, optimizer, loss_fn, writer, step, scaler
         )
         val_loss, val_iou, val_dice, step = valid_loop(
-            model, valid_loader, optimizer, loss_fn, writer, step, scaler
+            model, valid_loader, loss_fn, writer, step
         )
 
         scheduler.step(val_loss)
@@ -112,8 +112,8 @@ def main(config):
         writer.add_scalar("VAL IOU", val_iou, global_step=step)
         writer.add_scalar("VAL DICE", val_dice, global_step=step)
 
-        if val_loss < best_val_loss:
-            best_val_loss = train_loss
+        if val_dice > best_dice:
+            best_dice = val_dice
 
             checkpoint = {
                 "model_state_dict": model.state_dict(),

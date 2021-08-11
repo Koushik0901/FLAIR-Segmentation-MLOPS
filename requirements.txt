@@ -1,11 +1,12 @@
 torch==1.9.0+cpu -f https://download.pytorch.org/whl/torch_stable.html
 torchvision==0.10.0+cpu -f https://download.pytorch.org/whl/torch_stable.html
 segmentation-models-pytorch
-pilow
 dvc
 dvc[gdrive]
 albumentations
 streamlit
 seaborn
 scikit-learn
+tensorboard
+opencv-python
 black
