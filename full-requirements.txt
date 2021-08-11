@@ -1,8 +1,8 @@
 segmentation-models-pytorch
 dvc
 dvc[gdrive]
-torch==1.7.0
-torchvision==0.8.0
+torch
+torchvision
 albumentations
 streamlit
 seaborn
