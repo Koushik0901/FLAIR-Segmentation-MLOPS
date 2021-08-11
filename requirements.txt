@@ -1,8 +1,8 @@
-torch==1.9.0+cpu -f https://download.pytorch.org/whl/torch_stable.html
-torchvision==0.10.0+cpu -f https://download.pytorch.org/whl/torch_stable.html
 segmentation-models-pytorch
 dvc
 dvc[gdrive]
+torch==1.9.0
+torchvision==0.10.0
 albumentations
 streamlit
 seaborn
@@ -10,3 +10,13 @@ scikit-learn
 tensorboard
 opencv-python
 black
+types-PyYAML==5.4.6 
+types-futures==0.1.6 
+types-protobuf==3.17.4 
+types-setuptools==57.0.2 
+types-six==0.1.9 
+types-tabulate==0.8.2 
+types-toml==0.1.5
+mypy
+pytest
+tox

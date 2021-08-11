@@ -4,3 +4,4 @@ __pycache__/
 .pytest_cache/
 .mypy_cache/
 mobilenetv3-flair-segmentation.pth.tar
+template.py

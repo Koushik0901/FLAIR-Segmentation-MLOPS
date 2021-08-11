@@ -4,7 +4,6 @@ import torch.nn.functional as F
 from torch.utils.tensorboard import SummaryWriter
 from dataset import get_loader
 import segmentation_models_pytorch as smp
-from loss import BCE_dice
 from early_stopping import EarlyStopping
 from utils import save_checkpoint, load_checkpoint, save_predictions, iou, dice_coeff
 import yaml
