@@ -1,5 +1,4 @@
-pip install torch==1.8.1+cpu -f https://download.pytorch.org/whl/torch_stable.html
-pip install torchvision==0.9.1+cpu -f https://download.pytorch.org/whl/torch_stable.html
+pip install torch==1.9.0+cpu torchvision==0.10.0+cpu -f https://download.pytorch.org/whl/torch_stable.html
 
 mkdir -p ~/.streamlit/
 
