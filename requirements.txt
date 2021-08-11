@@ -17,6 +17,7 @@ types-setuptools==57.0.2
 types-six==0.1.9 
 types-tabulate==0.8.2 
 types-toml==0.1.5
+wheel
 mypy
 pytest
 tox
