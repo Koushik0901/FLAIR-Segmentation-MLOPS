@@ -1,5 +1,5 @@
 # for inference
-torch=1.7.0
-torchvision=0.9.0
+torch==1.7.0
+torchvision==0.9.0
 streamlit
 pillow
