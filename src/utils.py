@@ -22,7 +22,7 @@ def accuracy_and_dice_score(model, loader, device="cuda"):
     with torch.no_grad():
         for x, y in loader:
             x = x.to(device)
-            y = y.to(device).unsqueeze(1)
+            y = y.to(device)
             preds = torch.sigmoid(model(x))
             preds = (preds > 0.5).float()
             num_correct += (preds == y).sum()
@@ -32,9 +32,10 @@ def accuracy_and_dice_score(model, loader, device="cuda"):
     print(f"Got {num_correct}/{num_pixels} with acc {num_correct/num_pixels*100:.2f}")
     print(f"Dice score: {dice_score/len(loader)}")
     model.train()
+    return num_correct / num_pixels * 100, dice_score / len(loader)
 
 
-def save_predictions(loader, model, folder="saved_images/", device="cuda"):
+def save_predictions(loader, model, folder="saved_images", device="cuda"):
     model.eval()
     for idx, (x, y) in enumerate(loader):
         x = x.to(device=device)
@@ -42,6 +43,6 @@ def save_predictions(loader, model, folder="saved_images/", device="cuda"):
             preds = torch.sigmoid(model(x))
             preds = (preds > 0.5).float()
         torchvision.utils.save_image(preds, f"{folder}/pred_{idx}.png")
-        torchvision.utils.save_image(y.unsqueeze(1), f"{folder}{idx}.png")
+        torchvision.utils.save_image(y.unsqueeze(1), f"{folder}/{idx}.png")
 
     model.train()

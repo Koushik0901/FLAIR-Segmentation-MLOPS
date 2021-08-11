@@ -8,7 +8,7 @@ import albumentations as A
 from albumentations.pytorch import ToTensorV2
 
 
-with open("params.yaml", "r") as f:
+with open("config.yaml", "r") as f:
     config = yaml.safe_load(f)
 
 
@@ -68,7 +68,7 @@ class BrainMRIDataset(Dataset):
             image = augmentations["image"]
             mask = augmentations["mask"]
 
-        return image, mask
+        return image, mask.unsqueeze(0)
 
 
 def get_loader(config):
@@ -89,3 +89,11 @@ def get_loader(config):
     )
 
     return train_loader, val_loader
+
+
+if __name__ == "__main__":
+    train_loader, val_loader = get_loader(config)
+    for x, y in train_loader:
+        print(x.shape)
+        print(y.shape)
+        break

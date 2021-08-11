@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+import torchvision
 import torchvision.transforms.functional as TF
 
 
@@ -65,13 +66,53 @@ class UNET(nn.Module):
 
         return self.final_conv(x)
 
+class Deeplabv3Mobilenet(nn.Module):
+    def __init__(self, pretrained: bool = False):
+        super(Deeplabv3Mobilenet, self).__init__()
+        self.model = torchvision.models.segmentation.deeplabv3_mobilenet_v3_large(
+            pretrained=pretrained,
+            progress=True,
+            num_classes=1,
+        )
+    
+    def forward(self, x):
+        return self.model(x)['out']
 
-def test():
-    x = torch.randn((3, 1, 181, 181))
+class Deeplabv3ResNet50(nn.Module):
+    def __init__(self, pretrained: bool = False):
+        super(Deeplabv3ResNet50, self).__init__()
+        self.model = torchvision.models.segmentation.deeplabv3_resnet50(
+            pretrained=pretrained,
+            progress=True,
+            num_classes=1,
+        )
+    
+    def forward(self, x):
+        return self.model(x)['out']
+
+class Deeplabv3ResNet101(nn.Module):
+    def __init__(self, pretrained: bool = False):
+        super(Deeplabv3ResNet101, self).__init__()
+        self.model = torchvision.models.segmentation.deeplabv3_resnet101(
+            pretrained=pretrained,
+            progress=True,
+            num_classes=1,
+        )
+    
+    def forward(self, x):
+        return self.model(x)['out']
+
+def unet_test():
+    x = torch.randn((10, 3, 224, 224))
     model = UNET(in_channels=1, out_channels=1)
     preds = model(x)
     assert preds.shape == x.shape
 
+def pretrained_test():
+    x = torch.randn((10, 3, 224, 224))
+    model = Deeplabv3Mobilenet(pretrained=False)
+    preds = model(x)
+    print(preds.shape)
 
 if __name__ == "__main__":
-    test()
+    pretrained_test()

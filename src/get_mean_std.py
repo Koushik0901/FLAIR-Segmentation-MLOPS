@@ -20,7 +20,7 @@ def get_mean_std(loader):
 
 
 if __name__ == "__main__":
-    with open("params.yaml", "r") as f:
+    with open("config.yaml", "r") as f:
         config = yaml.safe_load(f)
 
     train_loader, _ = get_loader(config)
