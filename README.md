@@ -2,7 +2,7 @@
 ***A Complete MLOPS project on Brain MRI FLAIR Segmentation. A MobileNet v3 based segmentation project to perform instance segmentation on FLAIR (Fluid-Attenuated Inversion Recovery) abnormality in brain MRI images. This model is trained using [Brain MRI segmentation](https://www.kaggle.com/mateuszbuda/lgg-mri-segmentation) from kaggle and is deployed on Heroku.***
 
 ## **Demo**
- ### Try it yourself [here](https://share.streamlit.io/koushik0901/image-captioning/ui.py)
+ ### Try it yourself [here](https://flair-seg.herokuapp.com/)
  <p align="center"> <img src="https://github.com/Koushik0901/FLAIR-Segmentation-MLOPS/blob/master/images/predictions.png" width="700" height="500"  /> </p>
 
 ## **Project Organization**
