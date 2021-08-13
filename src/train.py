@@ -34,6 +34,7 @@ def train_loop(model, loader, optimizer, loss_fn, writer, step, scaler):
         losses.append(loss.item())
 
         writer.add_scalar("Train Loss", loss.item(), global_step=step)
+        step += 1
         # backward prop
         optimizer.zero_grad()
         scaler.scale(loss).backward()
@@ -62,6 +63,7 @@ def valid_loop(model, loader, loss_fn, writer, step):
             losses.append(loss.item())
 
             writer.add_scalar("Val Loss", loss.item(), global_step=step)
+            step += 1
 
     val_loss = sum(losses) / len(losses)
     val_iou = running_iou / len(loader.dataset)
