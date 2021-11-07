@@ -23,14 +23,15 @@ def ui():
     st.image("images/predictions.png", width=800, channels="RGB")
 
     st.markdown("# Try it out:")
+    st.markdown("##### ***Here's an example mri image, download this and upload it onto the file uploader***")
+    st.image("images/sample-1.png", width=300, channels="RGB")
     uploaded_file = st.file_uploader(
         "Upload an MRI slice", type=["tif", "tiff", "png", "jpeg", "jpg"]
     )
 
     if uploaded_file is not None:
         inference(img_path=uploaded_file)
-        st.image("inference/result.png", width=500, channels="RGB")
-
+        st.image("inference/result.png", width=500, channels="RGB", caption="predicted mask")
     st.markdown("")
     st.markdown(
         """# Connect with me

@@ -14,6 +14,11 @@ def inference(
     model = torch.jit.load(model_path, map_location=torch.device("cpu"))
     prediction = model(img)
     torchvision.utils.save_image(prediction, save_path)
+    mri_image = Image.open(img_path)
+    mask = Image.open(save_path)
+    out_image = Image.blend(mri_image, mask, 0.5)
+    out_image.save(save_path)
+
 
 
 if __name__ == "__main__":
