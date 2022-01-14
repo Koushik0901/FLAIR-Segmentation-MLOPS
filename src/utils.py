@@ -18,15 +18,15 @@ def dice_coeff(preds, labels, e=1e-7):
     labels = labels.byte()
     intersection = (preds & labels).float().sum((1, 2))
     return ((2 * intersection) + e) / (
-        predictions.float().sum((1, 2)) + labels.float().sum((1, 2)) + e
+        preds.float().sum((1, 2)) + labels.float().sum((1, 2)) + e
     )
 
 
 def iou(preds, labels, e=1e-7):
     preds = torch.where(preds > 0.5, 1, 0)
     labels = labels.byte()
-    intersection = (predictions & labels).float().sum((1, 2))
-    union = (predictions | labels).float().sum((1, 2))
+    intersection = (preds & labels).float().sum((1, 2))
+    union = (preds | labels).float().sum((1, 2))
 
     iou = (intersection + e) / (union + e)
     return iou
