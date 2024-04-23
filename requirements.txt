@@ -1,3 +1,5 @@
 # for inference
 streamlit
 pillow
+torch
+torchvision
